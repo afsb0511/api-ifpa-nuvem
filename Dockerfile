@@ -1,17 +1,17 @@
 FROM python:3.10-alpine
 
-# Define a pasta de trabalho dentro do contentor
 WORKDIR /app
 
-# Copia e instala as dependências
+# Instala as dependências de sistema necessárias para compilar bibliotecas no Alpine
+RUN apk add --no-cache gcc g++ musl-dev linux-headers python3-dev
+
+# Copia e instala as dependências do Python
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copia o resto do código
+# Copia o resto do código e a pasta do ChromaDB
 COPY . .
 
-# Expõe a porta que a aplicação vai utilizar
 EXPOSE 8000
 
-# Comando para iniciar o servidor (ajusta conforme uses FastAPI/Uvicorn ou Flask)
 CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
